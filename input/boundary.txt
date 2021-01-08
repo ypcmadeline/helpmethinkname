@@ -1,0 +1,5 @@
+Angle<=360
+Angle>=0.05625
+Keithley 2440 cur (A)<50
+Keithley 2440 com (V)<30
+Keithley 6221 duration<100
