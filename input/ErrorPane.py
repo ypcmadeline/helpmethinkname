@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class error(object):
+class error():
 
     def __init__(self, msg):
         self.msg = msg

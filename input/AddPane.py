@@ -6,7 +6,7 @@ import re
 import input.ErrorPane as ErrorPane
 
 
-class add(object):
+class add():
     signal = pyqtSignal(int)
 
     def __init__(self, prop):

@@ -19,7 +19,7 @@ import input.property as property
 import input.ErrorPane as ErrorPane
 
 
-class parameter(object):
+class parameter():
 
     def __init__(self, const, vary):
         self.const = const

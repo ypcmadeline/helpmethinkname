@@ -14,7 +14,7 @@ import input.ErrorPane as ErrorPane
 
 
 
-class Setting(object):
+class Setting():
 
     def __init__(self, MainWindow):
         MainWindow.setObjectName("MainWindow")

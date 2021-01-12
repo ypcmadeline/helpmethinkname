@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import output.first_gui
 
 
-class process(object):
+class process():
 
     def __init__(self, MainWindow, msg):
         self.MainWindow = MainWindow
