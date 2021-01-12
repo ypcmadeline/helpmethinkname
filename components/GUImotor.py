@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtWidgets
 import library.motor as motor
 import input.ErrorPane as ErrorPane
 
-class guimotor(object):
+class guimotor:
 
     def __init__(self):
         # self.motor = motor.motor()
@@ -78,7 +78,7 @@ class guimotor(object):
         self.anglelabel.setText("Current angle: " + str(self.motor.angle))
 
     def reset(self):
-        self.motor.return_zero()
+        # self.motor.return_zero()
         self.update()
 
     def changespeed(self):

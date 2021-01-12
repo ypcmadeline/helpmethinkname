@@ -4,7 +4,7 @@ import re
 from PyQt5 import QtCore, QtWidgets
 import library.keithley_2440 as keithley_2440
 import input.ErrorPane as ErrorPane
-class ksm2440(object):
+class ksm2440:
 
     def __init__(self):
         # self.ksm2440 = keithley_2440.keithley_2440()

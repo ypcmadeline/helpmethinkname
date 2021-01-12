@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QFileDialog
 
 import input.ErrorPane as ErrorPane
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal
 import input.ProcessPane as ProcessPane
 
 

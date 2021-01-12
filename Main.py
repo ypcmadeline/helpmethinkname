@@ -5,6 +5,7 @@ import components.GUIksm6221
 import input.MainPane
 import output.first_gui
 
+
 class gui(object):
 
     def setupUi(self, MainWindow):
@@ -87,8 +88,7 @@ class gui(object):
 
     def popinput(self):
         self.windowinput = QtWidgets.QMainWindow()
-        self.ui = input.MainPane.Setting()
-        self.ui.setupUi(self.windowinput)
+        self.ui = input.MainPane.Setting(self.windowinput)
         self.windowinput.show()
 
     def popoutput(self):

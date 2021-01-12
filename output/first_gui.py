@@ -13,6 +13,7 @@ from output.setting import gui_color, modes, gui_font
 from PyQt5 import QtCore, QtGui, QtWidgets 
 import threading # for checking update information 
 import time
+import output.WriteOutput
 
 
 class Ui_kGUI(object):
@@ -68,7 +69,7 @@ class Ui_kGUI(object):
         self.frame.setObjectName("frame")
 
         self.run_button = QtWidgets.QPushButton(self.frame)
-        self.run_button.clicked.connect(self.process)   
+        self.run_button.clicked.connect(self.process)
         self.run_button.setGeometry(QtCore.QRect(40, 220, 351, 61))
         self.run_button.setStyleSheet("QPushButton {\n"
             f"    background-color: {gui_color['button_color']};\n"
@@ -126,7 +127,7 @@ class Ui_kGUI(object):
             f"      background-color :transparent; "    
             "}"
             )
-        self.gridLayout.addWidget(self.Working_mode_box, 0, 1, 1, 1) 
+        self.gridLayout.addWidget(self.Working_mode_box, 0, 1, 1, 1)
 
         self.Input_file_address = QtWidgets.QPushButton(self.layoutWidget)
         self.Input_file_address.clicked.connect(self.get_file_name) 
@@ -170,7 +171,10 @@ class Ui_kGUI(object):
         self.gridLayout.addWidget(self.Output_file_name_text, 2, 1, 1, 1)
         self.Output_file_address = QtWidgets.QPushButton(self.layoutWidget)
         self.Output_file_address.clicked.connect(self.get_folder_name)
-        self.Output_file_address.setEnabled(True)
+        # self.Output_file_address.setEnabled(True)
+        self.Output_file_address.setText("hihi")
+        self.Output_file_address.adjustSize()
+
         
         self.Output_file_address.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
         self.Output_file_address.setAutoFillBackground(False)
@@ -225,17 +229,22 @@ class Ui_kGUI(object):
         self.Output_file_address_text.setText(folder_name)
 
     def process(self):
-        file_address = self.Input_file_text.text()
-        mode = self.Working_mode_box.currentText()
-        output_file_name = self.Output_file_name_text.text()
-        output_file_address = self.Output_file_address_text.text()
-        self.run_button.hide()
-        self.worker.update(file_address,mode,output_file_name,output_file_address)
-        self.worker.run()
+        # file_address = self.Input_file_text.text()
+        # mode = self.Working_mode_box.currentText()
+        # output_file_name = self.Output_file_name_text.text()
+        # output_file_address = self.Output_file_address_text.text()
+        # self.run_button.hide()
+        # self.worker.update(file_address,mode,output_file_name,output_file_address)
+        # self.worker.run()
+        #
+        # h = threading.Thread(target = self.progress_count)
+        # h.start()
+        # self.stop_button.show()
 
-        h = threading.Thread(target = self.progress_count)
-        h.start()
-        self.stop_button.show()
+        # o = output.WriteOutput.output("C:/Users/Madeline Chan/PycharmProjects/GUI_all/output/tryin.csv", "none")
+        self.o = output.WriteOutput.output(self.Input_file_text.text(), self.Working_mode_box.currentText())
+        self.o.write_output()
+
 
     def progress_count(self):
         i=0
@@ -251,6 +260,7 @@ class Ui_kGUI(object):
 
     def end(self):
         print("end")
+
 
 if __name__ == "__main__":
 #     import sys

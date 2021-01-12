@@ -8,9 +8,9 @@ address_6221 = 'GPIB0::12::INSTR'
 
 class keithley_6221:
     def __init__(self):
-
         rm = py.ResourceManager()
         self.equ_6221 = rm.open_resource(address_6221)
+        # self.equ_6221.write("CLE")
 
     def reset(self):
         self.equ_6221.write("*rst")

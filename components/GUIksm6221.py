@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtWidgets
 import library.keithley_6221 as keithley_6221
 import input.ErrorPane as ErrorPane
 
-class ksm6221(object):
+class ksm6221:
 
     def __init__(self):
         # self.ksm6221 = keithley_6221.keithley_6221()
