@@ -18,8 +18,9 @@ class keithley_6221:
     def auto_range(self, option):
         if (option):
             self.equ_6221.write("curr:rang:auto on")
+            self.equ_6221.write("curr:rang 100e-3")
         else:
-            self.equ_6221.write("curr:rang:auto  off")
+            self.equ_6221.write("curr:rang:auto off")
 
     def set_compliance(self, compliance):
         self.equ_6221.write("curr:comp %d" % compliance)

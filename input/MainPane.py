@@ -25,7 +25,7 @@ class Setting():
         self.label.setGeometry(QtCore.QRect(20, 0, 369, 59))
         self.label.setObjectName("label")
         self.formLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.formLayoutWidget.setGeometry(QtCore.QRect(50, 160, 381, 121))
+        self.formLayoutWidget.setGeometry(QtCore.QRect(50, 300, 400, 300))
         self.formLayoutWidget.setObjectName("formLayoutWidget")
         self.formLayout = QtWidgets.QFormLayout(self.formLayoutWidget)
         self.formLayout.setContentsMargins(0, 0, 0, 0)
@@ -61,9 +61,35 @@ class Setting():
 
     def openwindow(self, const, vary):
         self.nextwindow = QtWidgets.QMainWindow()
-        self.ui = parameter(const, vary)
-        self.ui.setupUi(self.nextwindow)
-        self.nextwindow.show()
+        if self.combo.currentText() == "Dc sweep mode":
+            self.ui = parameter(0, 3)
+            self.ui.setupUi(self.nextwindow)
+            self.ui.combo[1].setCurrentIndex(2)
+            self.ui.combo[2].setCurrentIndex(6)
+            self.nextwindow.show()
+            return
+        if self.combo.currentText() == "Ac sweep mode":
+            self.ui = parameter(1, 4)
+            self.ui.setupUi(self.nextwindow)
+            self.ui.combo[1].setCurrentIndex(4)
+            self.ui.ccombo[0].setCurrentIndex(6)
+            self.ui.combo[2].setCurrentIndex(2)
+            self.ui.combo[3].setCurrentIndex(7)
+            self.nextwindow.show()
+            return
+        if self.combo.currentText() == "MFLI mode" or self.combo.currentText() == "Sensor mode":
+            self.ui = parameter(2, 2)
+            self.ui.setupUi(self.nextwindow)
+            self.ui.combo[1].setCurrentIndex(2)
+            self.ui.ccombo[0].setCurrentIndex(5)
+            self.ui.ccombo[1].setCurrentIndex(7)
+            self.nextwindow.show()
+            return
+        else:
+            self.ui = parameter(const, vary)
+            self.ui.setupUi(self.nextwindow)
+            self.nextwindow.show()
+            return
         # MainWindow.hide()
 
     def setupUi(self, MainWindow):
@@ -72,8 +98,9 @@ class Setting():
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(20, 0, 369, 59))
+        self.label.setGeometry(QtCore.QRect(10, 0, 369, 59))
         self.label.setObjectName("label")
+        self.label.setText("Input File Generator -- Setting")
         self.formLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.formLayoutWidget.setGeometry(QtCore.QRect(50, 160, 381, 121))
         self.formLayoutWidget.setObjectName("formLayoutWidget")
@@ -82,21 +109,34 @@ class Setting():
         self.formLayout.setObjectName("formLayout")
         self.textEdit = QtWidgets.QTextEdit(self.formLayoutWidget)
         self.textEdit.setObjectName("textEdit")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.textEdit)
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.textEdit)
         self.label_3 = QtWidgets.QLabel(self.formLayoutWidget)
         self.label_3.setObjectName("label_3")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_3)
+        self.label_3.setText("Number of constant variables")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.label_3)
         self.textEdit_2 = QtWidgets.QTextEdit(self.formLayoutWidget)
         self.textEdit_2.setObjectName("textEdit_2")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.textEdit_2)
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.textEdit_2)
         self.label_2 = QtWidgets.QLabel(self.formLayoutWidget)
         self.label_2.setObjectName("label_2")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label_2)
+        self.label_2.setText("Number of varying variables")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_2)
         self.pushButton = QtWidgets.QPushButton(self.formLayoutWidget)
         self.pushButton.setObjectName("pushButton")
+        self.pushButton.setText("OK")
         self.pushButton.clicked.connect(lambda: self.btn_ok_handler())
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.pushButton)
 
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.pushButton)
+        self.combo = QtWidgets.QComboBox(self.formLayoutWidget)
+        self.combo.addItem("None")
+        self.combo.addItem("Dc sweep mode")
+        self.combo.addItem("Ac sweep mode")
+        self.combo.addItem("MFLI mode")
+        self.combo.addItem("Sensor mode")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.combo)
+
+
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 583, 29))
@@ -106,7 +146,7 @@ class Setting():
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
+        # self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -131,6 +171,9 @@ class Setting():
         # self.pushButton.clicked(self.btn_ok_handler())
 
     def btn_ok_handler(self):
+        if self.combo.currentText() != "None":
+            self.openwindow(0,0)
+            return
         vary = self.textEdit.toPlainText()
         if not self.checknum(vary):
             return
@@ -158,6 +201,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Setting(MainWindow)
-    # ui.setupUi(MainWindow)
+    ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

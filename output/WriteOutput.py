@@ -8,9 +8,12 @@ import input.ErrorPane as ErrorPane
 import library.keithley_2440, library.keithley_6221, library.motor
 
 
+# import zhinst.ziPython
+
 class output:
 
     def __init__(self, inputfile, mode):
+        self.mode = mode
         self.window = QtWidgets.QMainWindow()
         try:
             # self.ksm2440 = library.keithley_2440.keithley_2440()
@@ -27,11 +30,29 @@ class output:
             print("find motor")
         except:
             self.popErrorWindow("Fail to connect motor")
-        try:
-            # self.ksm2182 = library.keithley_2182a.keithley_2182a()
-            print("find 2182")
-        except:
-            self.popErrorWindow("Fail to connect Keithley 2182a Source Meter")
+        if self.mode == "Dc Sweep mode" or self.mode == "Ac Sweep Mode":
+            try:
+                # self.ksm2182 = library.keithley_2182a.keithley_2182a()
+                print("find 2182")
+            except:
+                self.popErrorWindow("Fail to connect Keithley 2182a Source Meter")
+        if self.mode == "MFLI mode":
+            try:
+                # d = zhinst.ziPython.ziDiscovery()
+                # d.find('dev5062')
+                # devProp = d.get('dev5062')
+                # self.daq = zhinst.ziPython.ziDAQServer(devProp['serveraddress'], devProp['serverport'], 6)
+                print("find mfli")
+            except:
+                self.popErrorWindow("Fail to connect MFLI")
+        if self.mode == "sensor mode":
+            try:
+                from library.gdx_s import gdx
+                self.gdx = gdx.gdx()
+                self.gdx.open_usb()
+                print("find sensor")
+            except:
+                self.popErrorWindow("Fail to connect sensor")
         try:
             self.input = pd.read_csv(inputfile)
             self.inputadress = inputfile
@@ -43,7 +64,6 @@ class output:
             # self.output = open(output+".csv", 'w+', newline='')
         except:
             self.popErrorWindow("Fail to create output file")
-        self.mode = mode
 
     def write_output(self):
         if "Keithley 2440 cur (A)" or "Keithley 2440 com (V)" in self.input:
@@ -56,16 +76,60 @@ class output:
         if "Angle" in self.input:
             # self.motor = library.motor.motor()
             print("construct motor")
+
         # write header
         f = open(self.inputadress, newline='')
         csv_reader = csv.reader(f)
         csv_headings = next(csv_reader)
         f.close()
+        if self.mode == "Dc Sweep mode" or self.mode == "Ac Sweep Mode":
+            csv_headings = csv_headings + ["Keithley 2182a"]
+        elif self.mode == "MFLI mode":
+            csv_headings = csv_headings + ["MFLI-x", "MFLI-y"]
+        else:
+            csv_headings = csv_headings + ["Sensor x", "Sensor y", "Sensor z"]
         self.output.csv_write = csv.writer(self.output)
         self.output.csv_write.writerow(csv_headings)
         self.output.flush()
         count = self.input.iloc[:, 0].count()
         for i in range(count):
+
+            if i == 0:
+                if self.mode == "Ac sweep Mode":
+                    try:
+                        print("ac")
+                        # self.ksm6221.auto_range(False)
+                    #     equ_6221.write("curr 0")
+                    except:
+                        pass
+                if self.mode == "MFLI Mode":
+                    try:
+                        print("mfli")
+                        # self.ksm6221.set_offset(0)
+                        # self.ksm6221.wave_range("best")
+                        # self.ksm6221.arm_wave()
+                        # self.ksm6221.wave_init()
+                    #     equ_6221.write("curr 0")
+                    except:
+                        pass
+                if self.mode == "Sensor Mode":
+                    try:
+                        print("sensor")
+                        # self.gdx.select_sensors()
+                        # self.gdx.start(70)
+                    except:
+                        pass
+                try:
+                    # self.ksm2440.output(True)
+                    print("turn on 2440")
+                except:
+                    pass
+                try:
+                    # self.ksm6221.output(True)
+                    print("turn on 6221")
+                except:
+                    pass
+
             record = []
             if "Keithley 2440 cur (A)" in self.input:
                 if i != 0:
@@ -138,21 +202,22 @@ class output:
                 record.append(self.input["Angle"][i])
                 # time.sleep(0.1)
 
-            if i == 0:
-                try:
-                    # self.ksm2440.output(True)
-                    print("turn on 2440")
-                except:
-                    pass
-                try:
-                    # self.ksm6221.output(True)
-                    print("turn on 6221")
-                except:
-                    pass
-
             # measurement
-            result = 0
-            record.append(result)
+            result = [0]
+            if self.mode == "Dc Sweep mode" or self.mode == "Dc Sweep mode":
+                # result = self.ksm2182.record()
+                result = [1]
+            if self.mode == "MFLI mode":
+                # mfli_data = self.daq.poll(0.1,10,1,True)
+                # if '/dev5062/demods/0/sample' in mfli_data:
+                #     x_1 = mfli_data['/dev5062/demods/0/sample']['x']
+                #     y_1 = mfli_data['/dev5062/demods/0/sample']['y']
+                #     result = [x_1[0], y_1[0]]
+                result = [2, 3]
+            if self.mode == "Sensor mode":
+                # result = self.gdx.read()
+                result = [4,5,6]
+            record = record + result
             self.output.csv_write.writerow(record)
             self.output.flush()
             # time.sleep(2)
